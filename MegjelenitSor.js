@@ -1,38 +1,49 @@
 class MegjelenitSor {
-    #adat = {};
- 
-    constructor(adat, szuloElem) {
-        this.#adat = adat;
+  #adat = {};
+
+  constructor(adat, szuloElem, index) {
+    this.#adat = adat;
+    this.index = index;
+    this.tablaElem = szuloElem;
+    this.#sor();
+    this.sorElem = this.tablaElem.children("tr:last-child");
+    this.keszElem = this.sorElem.children("td").children(".kesz");
+    this.torolElem = this.sorElem.children("td").children(".torol");
+    if (this.#adat.kesz) {
+        this.setHatterszin();
+  
+      }
+    this.keszElem.on("click", () => {
+      this.#esemenyTrigger("kesz");
+    });
+    this.torolElem.on("click", () => {
+      this.#esemenyTrigger("torles");
+    });
    
-        this.tablaElem = szuloElem;
+  }
 
-        this.#sor();
-        /** eseménykezelők a kész és a törlés gombokhoz */
-        this.sorElem = this.tablaElem.children("tr:last-child");
-        this.keszElem = this.sorElem.children("td").children(".kesz");
-        this.torolElem = this.sorElem.children("td").children(".torol");
-     
-      
-        //console.log(this.keszElem);
-        this.keszElem.on("click", () => {
-            console.log(this)
-        });
-       
-       
+  #esemenyTrigger(esemenyNev) {
+    const e = new CustomEvent(esemenyNev, { detail: this });
+    window.dispatchEvent(e);
+  }
+  setHatterszin() {
+    this.sorElem.css("background-color", "rgb(130, 243, 205)");
+  }
+
+  #sor() {
+    let txt = "";
+
+    txt += "<tr>";
+    for (const key in this.#adat) {
+      if (key != "kesz") {
+        txt += `<td>${this.#adat[key]}</td>`;
+      }
     }
-    #sor() {
-        let txt = "";
 
-        txt += "<tr>";
-        for (const key in this.#adat) {
-            txt += `<td>${this.#adat[key]}</td>`;
-          }
-        
-        txt += `<td><span class="kesz">✔️</span> <span class="torol">🗑</span></td>`;
-        txt += "</tr>";
+    txt += `<td><span class="kesz">✔️</span> <span class="torol">🗑</span></td>`;
+    txt += "</tr>";
 
-        this.tablaElem.append(txt);
-    }
-   
+    this.tablaElem.append(txt);
+  }
 }
 export default MegjelenitSor;
